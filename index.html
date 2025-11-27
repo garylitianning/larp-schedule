@@ -1,0 +1,1478 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="apple-mobile-web-app-title" content="剧本杀日程">
+    <title>剧本杀日程</title>
+    
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;500;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet">
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --font-display: 'Plus Jakarta Sans', 'Noto Sans SC', sans-serif;
+        }
+
+        /* Pink Theme - Light Mode */
+        body {
+            --primary: #E6638C;
+            --accent: #FFB5A7;
+            --background: #f8f6f7;
+            --surface: #ffffff;
+            --surface-secondary: #f4f0f2;
+            --text-primary: #171114;
+            --text-secondary: #876472;
+            --border: rgba(0, 0, 0, 0.1);
+            --success-bg: #D1FAE5;
+            --success-text: #065F46;
+        }
+
+        /* Pink Theme - Dark Mode */
+        body.dark {
+            --primary: #E6638C;
+            --accent: #FFB5A7;
+            --background: #221018;
+            --surface: #2c1a22;
+            --surface-secondary: #3d2c35;
+            --text-primary: #ffffff;
+            --text-secondary: #a18995;
+            --border: rgba(255, 255, 255, 0.1);
+            --success-bg: rgba(16, 185, 129, 0.2);
+            --success-text: #10B981;
+        }
+
+        /* Blue Theme - Light Mode */
+        body.theme-blue {
+            --primary: #3B82F6;
+            --accent: #10B981;
+            --background: #F8FAFC;
+            --surface: #ffffff;
+            --surface-secondary: #E9EFF8;
+            --text-primary: #1A1B1F;
+            --text-secondary: #5F6C80;
+            --border: rgba(0, 0, 0, 0.1);
+            --success-bg: #D1FAE5;
+            --success-text: #065F46;
+        }
+
+        /* Blue Theme - Dark Mode */
+        body.theme-blue.dark {
+            --primary: #3B82F6;
+            --accent: #10B981;
+            --background: #0B1120;
+            --surface: #161E2C;
+            --surface-secondary: #283240;
+            --text-primary: #F8FAFC;
+            --text-secondary: #94A3B8;
+            --border: rgba(255, 255, 255, 0.1);
+            --success-bg: rgba(16, 185, 129, 0.2);
+            --success-text: #10B981;
+        }
+
+        body {
+            font-family: var(--font-display);
+            background-color: var(--background);
+            color: var(--text-primary);
+            min-height: 100vh;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+
+        .material-symbols-outlined.filled {
+            font-variation-settings: 'FILL' 1, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+
+        /* Layout */
+        .app-container {
+            max-width: 100%;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Header */
+        .header {
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            background-color: var(--surface);
+            border-bottom: 1px solid var(--border);
+            padding: 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            min-width: 80px;
+        }
+
+        .header-center {
+            flex: 1;
+            text-align: center;
+        }
+
+        .header-title {
+            font-size: 1.25rem;
+            font-weight: 700;
+            letter-spacing: -0.015em;
+        }
+
+        .header-right {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            min-width: 80px;
+            justify-content: flex-end;
+        }
+
+        .icon-button {
+            width: 2.5rem;
+            height: 2.5rem;
+            border: none;
+            background: none;
+            color: var(--text-primary);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 9999px;
+            transition: background-color 0.2s;
+        }
+
+        .icon-button:hover {
+            background-color: var(--surface-secondary);
+        }
+
+        .icon-button:active {
+            transform: scale(0.95);
+        }
+
+        /* Main Content */
+        .main-content {
+            flex: 1;
+            padding: 1rem;
+            overflow-y: auto;
+        }
+
+        /* View Toggle */
+        .view-toggle {
+            display: flex;
+            height: 2.75rem;
+            align-items: center;
+            justify-content: center;
+            border-radius: 0.75rem;
+            background-color: var(--surface-secondary);
+            padding: 0.25rem;
+            margin-bottom: 1rem;
+        }
+
+        .view-toggle-option {
+            flex: 1;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            border-radius: 0.5rem;
+            border: none;
+            background: none;
+            color: var(--text-secondary);
+            font-size: 0.875rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .view-toggle-option.active {
+            background-color: var(--surface);
+            color: var(--primary);
+            box-shadow: 0 0 4px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Calendar View */
+        .calendar-grid {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 0.25rem;
+        }
+
+        .calendar-header {
+            text-align: center;
+            font-size: 0.75rem;
+            font-weight: 700;
+            color: var(--text-secondary);
+            padding: 0.625rem 0;
+            letter-spacing: 0.015em;
+        }
+
+        .calendar-day {
+            aspect-ratio: 1;
+            border: none;
+            background: none;
+            color: var(--text-primary);
+            font-size: 0.875rem;
+            font-weight: 500;
+            cursor: pointer;
+            border-radius: 9999px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            transition: background-color 0.2s;
+            padding: 0.5rem 0.25rem;
+        }
+
+        .calendar-day:hover {
+            background-color: var(--surface-secondary);
+        }
+
+        .calendar-day.other-month {
+            color: var(--text-secondary);
+            opacity: 0.5;
+        }
+
+        .calendar-day.today {
+            background-color: var(--primary);
+            color: white;
+            font-weight: 700;
+        }
+
+        .calendar-day.has-event {
+            color: var(--primary);
+            background-color: rgba(230, 99, 140, 0.2);
+            border: 2px solid var(--primary);
+        }
+
+        body.theme-blue .calendar-day.has-event {
+            color: var(--primary);
+            background-color: rgba(59, 130, 246, 0.2);
+            border: 2px solid var(--primary);
+        }
+
+        .calendar-day-event {
+            font-size: 9px;
+            background-color: var(--accent);
+            color: #1F2937;
+            border-radius: 0.25rem;
+            padding: 0.125rem 0.25rem;
+            margin-top: 0.25rem;
+            max-width: 90%;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            line-height: 1.2;
+        }
+
+        .calendar-day-dot {
+            width: 0.375rem;
+            height: 0.375rem;
+            background-color: var(--accent);
+            border-radius: 9999px;
+            margin-top: 0.375rem;
+        }
+
+        /* Card List View */
+        .card-list {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .game-card {
+            background-color: var(--surface);
+            border-radius: 0.75rem;
+            overflow: hidden;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .game-card.highlighted {
+            box-shadow: 0 0 0 3px var(--primary);
+            animation: pulse 1s ease-in-out;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.02); }
+        }
+
+        .card-header {
+            padding: 1rem;
+            cursor: pointer;
+            display: grid;
+            grid-template-columns: auto 1fr auto auto;
+            gap: 0.75rem;
+            align-items: center;
+        }
+
+        .card-date {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-width: 60px;
+        }
+
+        .card-date-month {
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+        }
+
+        .card-date-day {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--primary);
+            line-height: 1;
+        }
+
+        .card-date-weekday {
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+        }
+
+        .card-info {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .card-title {
+            font-size: 1.125rem;
+            font-weight: 700;
+            margin-bottom: 0.25rem;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .card-subtitle {
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+        }
+
+        .card-actions {
+            display: flex;
+            gap: 0.25rem;
+            align-items: center;
+        }
+
+        .favorite-button {
+            width: 2.5rem;
+            height: 2.5rem;
+            border: none;
+            background: none;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--text-secondary);
+            transition: color 0.2s;
+        }
+
+        .favorite-button.active {
+            color: var(--primary);
+        }
+
+        .delete-button {
+            width: 2.5rem;
+            height: 2.5rem;
+            border: none;
+            background: none;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--text-secondary);
+            transition: color 0.2s;
+        }
+
+        .delete-button:hover {
+            color: #EF4444;
+        }
+
+        /* Card Edit Form */
+        .card-body {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .game-card.expanded .card-body {
+            max-height: 2000px;
+        }
+
+        .card-form {
+            padding: 1rem;
+            padding-top: 0;
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            border-top: 1px solid var(--border);
+        }
+
+        .form-section {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .form-section-title {
+            font-size: 0.875rem;
+            font-weight: 700;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 0.015em;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.25rem;
+        }
+
+        .form-label {
+            font-size: 0.75rem;
+            font-weight: 500;
+            color: var(--text-secondary);
+        }
+
+        .form-input,
+        .form-select,
+        .form-textarea {
+            width: 100%;
+            padding: 0.625rem 0.75rem;
+            border: 1px solid var(--border);
+            border-radius: 0.5rem;
+            background-color: var(--surface-secondary);
+            color: var(--text-primary);
+            font-size: 1rem;
+            font-family: var(--font-display);
+            transition: all 0.2s;
+        }
+
+        .form-input:focus,
+        .form-select:focus,
+        .form-textarea:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(230, 99, 140, 0.1);
+        }
+
+        body.theme-blue .form-input:focus,
+        body.theme-blue .form-select:focus,
+        body.theme-blue .form-textarea:focus {
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+        }
+
+        .form-textarea {
+            resize: vertical;
+            min-height: 80px;
+        }
+
+        .form-input.success {
+            background-color: var(--success-bg);
+            color: var(--success-text);
+            border-color: var(--success-text);
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0.75rem;
+        }
+
+        .checkbox-group {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0.75rem;
+            border-radius: 0.5rem;
+            background-color: var(--surface-secondary);
+        }
+
+        .checkbox-label {
+            font-size: 1rem;
+            font-weight: 500;
+        }
+
+        .checkbox-input {
+            width: 1.25rem;
+            height: 1.25rem;
+            accent-color: var(--primary);
+            cursor: pointer;
+        }
+
+        .form-actions {
+            display: flex;
+            gap: 0.75rem;
+            margin-top: 0.5rem;
+        }
+
+        .btn {
+            flex: 1;
+            padding: 0.75rem;
+            border: none;
+            border-radius: 9999px;
+            font-size: 1rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-family: var(--font-display);
+        }
+
+        .btn-primary {
+            background-color: var(--primary);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            opacity: 0.9;
+        }
+
+        .btn-secondary {
+            background-color: var(--surface-secondary);
+            color: var(--text-primary);
+        }
+
+        .btn-secondary:hover {
+            background-color: var(--border);
+        }
+
+        /* Settings View */
+        .settings-view {
+            display: none;
+            padding: 1rem;
+        }
+
+        .settings-view.active {
+            display: block;
+        }
+
+        .settings-section {
+            margin-bottom: 2rem;
+        }
+
+        .settings-section-header {
+            font-size: 0.875rem;
+            font-weight: 600;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 0.015em;
+            padding: 0 1rem 0.5rem;
+        }
+
+        .settings-card {
+            background-color: var(--surface);
+            border-radius: 0.75rem;
+            overflow: hidden;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+        }
+
+        .settings-item {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 1rem;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .settings-item:last-child {
+            border-bottom: none;
+        }
+
+        .settings-icon {
+            width: 2.5rem;
+            height: 2.5rem;
+            border-radius: 0.5rem;
+            background-color: var(--surface-secondary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--text-primary);
+        }
+
+        .settings-content {
+            flex: 1;
+        }
+
+        .settings-title {
+            font-size: 1rem;
+            font-weight: 500;
+        }
+
+        .settings-toggle-group {
+            display: flex;
+            height: 2.5rem;
+            align-items: center;
+            justify-content: center;
+            border-radius: 0.5rem;
+            background-color: var(--surface-secondary);
+            padding: 0.25rem;
+            margin-top: 0.75rem;
+        }
+
+        .settings-toggle-option {
+            flex: 1;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 0.375rem;
+            border: none;
+            background: none;
+            color: var(--text-secondary);
+            font-size: 0.875rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .settings-toggle-option.active {
+            background-color: var(--surface);
+            color: var(--text-primary);
+            box-shadow: 0 0 4px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Toggle Switch */
+        .toggle-switch {
+            position: relative;
+            width: 51px;
+            height: 31px;
+            background-color: var(--surface-secondary);
+            border-radius: 9999px;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+
+        .toggle-switch.active {
+            background-color: var(--primary);
+        }
+
+        .toggle-switch-thumb {
+            position: absolute;
+            top: 0.125rem;
+            left: 0.125rem;
+            width: 27px;
+            height: 27px;
+            background-color: white;
+            border-radius: 9999px;
+            box-shadow: 0 3px 8px rgba(0, 0, 0, 0.15), 0 3px 1px rgba(0, 0, 0, 0.06);
+            transition: transform 0.2s;
+        }
+
+        .toggle-switch.active .toggle-switch-thumb {
+            transform: translateX(20px);
+        }
+
+        /* Add Game Button */
+        .add-button {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            width: 3.5rem;
+            height: 3.5rem;
+            border-radius: 9999px;
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: transform 0.2s;
+            z-index: 50;
+        }
+
+        .add-button:hover {
+            transform: scale(1.1);
+        }
+
+        .add-button:active {
+            transform: scale(0.95);
+        }
+
+        /* Empty State */
+        .empty-state {
+            text-align: center;
+            padding: 3rem 1rem;
+            color: var(--text-secondary);
+        }
+
+        .empty-state-icon {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+            opacity: 0.5;
+        }
+
+        .empty-state-text {
+            font-size: 1rem;
+        }
+
+        /* Utility Classes */
+        .hidden {
+            display: none !important;
+        }
+
+        /* Modal/Dialog */
+        .dialog-overlay {
+            position: fixed;
+            inset: 0;
+            background-color: rgba(0, 0, 0, 0.5);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            padding: 1rem;
+        }
+
+        .dialog-overlay.active {
+            display: flex;
+        }
+
+        .dialog {
+            background-color: var(--surface);
+            border-radius: 0.75rem;
+            padding: 1.5rem;
+            max-width: 400px;
+            width: 100%;
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+        }
+
+        .dialog-title {
+            font-size: 1.25rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+
+        .dialog-content {
+            color: var(--text-secondary);
+            margin-bottom: 1.5rem;
+        }
+
+        .dialog-actions {
+            display: flex;
+            gap: 0.75rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="app-container">
+        <!-- Header -->
+        <header class="header">
+            <div class="header-left">
+                <button id="prevMonth" class="icon-button" style="display: none;">
+                    <span class="material-symbols-outlined">arrow_back_ios_new</span>
+                </button>
+            </div>
+            <div class="header-center">
+                <h1 class="header-title" id="headerTitle">October 2024</h1>
+            </div>
+            <div class="header-right">
+                <button id="nextMonth" class="icon-button" style="display: none;">
+                    <span class="material-symbols-outlined">arrow_forward_ios</span>
+                </button>
+                <button id="viewToggleBtn" class="icon-button">
+                    <span class="material-symbols-outlined">view_list</span>
+                </button>
+                <button id="settingsBtn" class="icon-button">
+                    <span class="material-symbols-outlined">settings</span>
+                </button>
+            </div>
+        </header>
+
+        <!-- Main Content Area -->
+        <main class="main-content">
+            <!-- Calendar View -->
+            <div id="calendarView" class="calendar-view">
+                <div class="calendar-grid" id="calendarGrid">
+                    <!-- Generated by JavaScript -->
+                </div>
+            </div>
+
+            <!-- Card List View -->
+            <div id="cardListView" class="card-list-view hidden">
+                <div class="card-list" id="cardList">
+                    <!-- Generated by JavaScript -->
+                </div>
+                
+                <div id="emptyState" class="empty-state hidden">
+                    <div class="empty-state-icon">📅</div>
+                    <div class="empty-state-text">还没有任何剧本杀安排<br>点击日历添加第一个吧！</div>
+                </div>
+            </div>
+
+            <!-- Settings View -->
+            <div id="settingsView" class="settings-view">
+                <div class="settings-section">
+                    <div class="settings-section-header">外观</div>
+                    <div class="settings-card">
+                        <div class="settings-item">
+                            <div class="settings-icon">
+                                <span class="material-symbols-outlined">palette</span>
+                            </div>
+                            <div class="settings-content">
+                                <div class="settings-title">主题</div>
+                                <div class="settings-toggle-group">
+                                    <button class="settings-toggle-option active" data-theme="pink">粉色</button>
+                                    <button class="settings-toggle-option" data-theme="blue">蓝色</button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="settings-item">
+                            <div class="settings-icon">
+                                <span class="material-symbols-outlined">dark_mode</span>
+                            </div>
+                            <div class="settings-content">
+                                <div class="settings-title">深色模式</div>
+                            </div>
+                            <div class="toggle-switch" id="darkModeToggle">
+                                <div class="toggle-switch-thumb"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <!-- Add Button -->
+        <button id="addButton" class="add-button">
+            <span class="material-symbols-outlined" style="font-size: 2rem;">add</span>
+        </button>
+    </div>
+
+    <!-- Delete Confirmation Dialog -->
+    <div id="deleteDialog" class="dialog-overlay">
+        <div class="dialog">
+            <div class="dialog-title">确认删除</div>
+            <div class="dialog-content">确定要删除这个剧本杀安排吗？此操作无法撤销。</div>
+            <div class="dialog-actions">
+                <button class="btn btn-secondary" id="cancelDelete">取消</button>
+                <button class="btn btn-primary" id="confirmDelete">删除</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // App State
+        const APP_STATE = {
+            currentView: 'calendar', // 'calendar', 'list', 'settings'
+            currentDate: new Date(),
+            games: [],
+            settings: {
+                theme: 'pink', // 'pink' or 'blue'
+                darkMode: false
+            },
+            expandedCardId: null,
+            deleteTargetId: null
+        };
+
+        // Weekday names
+        const WEEKDAYS = ['日', '一', '二', '三', '四', '五', '六'];
+        const WEEKDAY_HEADERS = ['S', 'M', 'T', 'W', 'T', 'F', 'S'];
+
+        // Initialize app
+        function initApp() {
+            loadFromStorage();
+            applyTheme();
+            setupEventListeners();
+            renderCurrentView();
+        }
+
+        // Local Storage
+        function loadFromStorage() {
+            const stored = localStorage.getItem('larpScheduleData');
+            if (stored) {
+                const data = JSON.parse(stored);
+                APP_STATE.games = data.games || [];
+                APP_STATE.settings = data.settings || APP_STATE.settings;
+            }
+        }
+
+        function saveToStorage() {
+            localStorage.setItem('larpScheduleData', JSON.stringify({
+                games: APP_STATE.games,
+                settings: APP_STATE.settings
+            }));
+        }
+
+        // Theme Management
+        function applyTheme() {
+            const body = document.body;
+            
+            // Apply theme color
+            if (APP_STATE.settings.theme === 'blue') {
+                body.classList.add('theme-blue');
+            } else {
+                body.classList.remove('theme-blue');
+            }
+
+            // Apply dark mode
+            if (APP_STATE.settings.darkMode) {
+                body.classList.add('dark');
+            } else {
+                body.classList.remove('dark');
+            }
+
+            // Update settings UI
+            document.querySelectorAll('[data-theme]').forEach(btn => {
+                if (btn.dataset.theme === APP_STATE.settings.theme) {
+                    btn.classList.add('active');
+                } else {
+                    btn.classList.remove('active');
+                }
+            });
+
+            const darkModeToggle = document.getElementById('darkModeToggle');
+            if (APP_STATE.settings.darkMode) {
+                darkModeToggle.classList.add('active');
+            } else {
+                darkModeToggle.classList.remove('active');
+            }
+        }
+
+        // Event Listeners
+        function setupEventListeners() {
+            // View toggle
+            document.getElementById('viewToggleBtn').addEventListener('click', toggleView);
+            
+            // Settings button - handled dynamically in renderCurrentView
+            
+            // Month navigation
+            document.getElementById('prevMonth').addEventListener('click', () => changeMonth(-1));
+            document.getElementById('nextMonth').addEventListener('click', () => changeMonth(1));
+            
+            // Add button
+            document.getElementById('addButton').addEventListener('click', addNewGame);
+            
+            // Theme switchers
+            document.querySelectorAll('[data-theme]').forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    APP_STATE.settings.theme = e.target.dataset.theme;
+                    saveToStorage();
+                    applyTheme();
+                });
+            });
+            
+            // Dark mode toggle
+            document.getElementById('darkModeToggle').addEventListener('click', () => {
+                APP_STATE.settings.darkMode = !APP_STATE.settings.darkMode;
+                saveToStorage();
+                applyTheme();
+            });
+
+            // Delete dialog
+            document.getElementById('cancelDelete').addEventListener('click', closeDeleteDialog);
+            document.getElementById('confirmDelete').addEventListener('click', confirmDelete);
+            document.getElementById('deleteDialog').addEventListener('click', (e) => {
+                if (e.target.id === 'deleteDialog') closeDeleteDialog();
+            });
+        }
+
+        // View Management
+        function renderCurrentView() {
+            const calendarView = document.getElementById('calendarView');
+            const cardListView = document.getElementById('cardListView');
+            const settingsView = document.getElementById('settingsView');
+            const addButton = document.getElementById('addButton');
+            const viewToggleBtn = document.getElementById('viewToggleBtn');
+            const settingsBtn = document.getElementById('settingsBtn');
+            const prevMonth = document.getElementById('prevMonth');
+            const nextMonth = document.getElementById('nextMonth');
+
+            // Hide all views
+            calendarView.classList.add('hidden');
+            cardListView.classList.add('hidden');
+            settingsView.classList.remove('active');
+
+            if (APP_STATE.currentView === 'calendar') {
+                calendarView.classList.remove('hidden');
+                renderCalendar();
+                updateHeaderTitle();
+                prevMonth.style.display = 'flex';
+                nextMonth.style.display = 'flex';
+                viewToggleBtn.style.display = 'flex';
+                viewToggleBtn.querySelector('.material-symbols-outlined').textContent = 'view_list';
+                settingsBtn.querySelector('.material-symbols-outlined').textContent = 'settings';
+                settingsBtn.onclick = showSettings;
+                addButton.style.display = 'none';
+            } else if (APP_STATE.currentView === 'list') {
+                cardListView.classList.remove('hidden');
+                renderCardList();
+                document.getElementById('headerTitle').textContent = '我的排班';
+                prevMonth.style.display = 'none';
+                nextMonth.style.display = 'none';
+                viewToggleBtn.style.display = 'flex';
+                viewToggleBtn.querySelector('.material-symbols-outlined').textContent = 'calendar_month';
+                settingsBtn.querySelector('.material-symbols-outlined').textContent = 'settings';
+                settingsBtn.onclick = showSettings;
+                addButton.style.display = 'flex';
+            } else if (APP_STATE.currentView === 'settings') {
+                settingsView.classList.add('active');
+                document.getElementById('headerTitle').textContent = '设置';
+                prevMonth.style.display = 'none';
+                nextMonth.style.display = 'none';
+                viewToggleBtn.style.display = 'none';
+                settingsBtn.querySelector('.material-symbols-outlined').textContent = 'arrow_back';
+                settingsBtn.onclick = backFromSettings;
+                addButton.style.display = 'none';
+            }
+        }
+
+        function toggleView() {
+            if (APP_STATE.currentView === 'calendar') {
+                APP_STATE.currentView = 'list';
+            } else {
+                APP_STATE.currentView = 'calendar';
+            }
+            renderCurrentView();
+        }
+
+        function showSettings() {
+            APP_STATE.currentView = 'settings';
+            renderCurrentView();
+        }
+
+        function backFromSettings() {
+            APP_STATE.currentView = 'calendar';
+            renderCurrentView();
+        }
+
+        // Calendar Rendering
+        function renderCalendar() {
+            const grid = document.getElementById('calendarGrid');
+            grid.innerHTML = '';
+
+            // Add weekday headers
+            WEEKDAY_HEADERS.forEach(day => {
+                const header = document.createElement('div');
+                header.className = 'calendar-header';
+                header.textContent = day;
+                grid.appendChild(header);
+            });
+
+            // Get calendar days
+            const year = APP_STATE.currentDate.getFullYear();
+            const month = APP_STATE.currentDate.getMonth();
+            const firstDay = new Date(year, month, 1);
+            const lastDay = new Date(year, month + 1, 0);
+            const prevLastDay = new Date(year, month, 0);
+            
+            const firstDayOfWeek = firstDay.getDay();
+            const daysInMonth = lastDay.getDate();
+            const daysInPrevMonth = prevLastDay.getDate();
+
+            // Previous month days
+            for (let i = firstDayOfWeek - 1; i >= 0; i--) {
+                const day = daysInPrevMonth - i;
+                const button = createCalendarDay(day, true, new Date(year, month - 1, day));
+                grid.appendChild(button);
+            }
+
+            // Current month days
+            for (let day = 1; day <= daysInMonth; day++) {
+                const date = new Date(year, month, day);
+                const button = createCalendarDay(day, false, date);
+                grid.appendChild(button);
+            }
+
+            // Next month days
+            const totalCells = grid.children.length - 7; // Subtract headers
+            const remainingCells = 35 - totalCells; // 5 weeks * 7 days
+            for (let day = 1; day <= remainingCells; day++) {
+                const button = createCalendarDay(day, true, new Date(year, month + 1, day));
+                grid.appendChild(button);
+            }
+        }
+
+        function createCalendarDay(day, isOtherMonth, date) {
+            const button = document.createElement('button');
+            button.className = 'calendar-day';
+            if (isOtherMonth) button.classList.add('other-month');
+
+            const dateStr = formatDateForStorage(date);
+            const gamesOnDay = APP_STATE.games.filter(g => g.date === dateStr);
+            const isToday = isDateToday(date);
+
+            if (isToday) {
+                button.classList.add('today');
+            }
+
+            if (gamesOnDay.length > 0) {
+                button.classList.add('has-event');
+            }
+
+            const dayNumber = document.createElement('span');
+            dayNumber.textContent = day;
+            button.appendChild(dayNumber);
+
+            if (gamesOnDay.length > 0) {
+                if (gamesOnDay.length === 1) {
+                    const event = document.createElement('div');
+                    event.className = 'calendar-day-event';
+                    event.textContent = gamesOnDay[0].title || '未命名';
+                    button.appendChild(event);
+                } else {
+                    const dot = document.createElement('div');
+                    dot.className = 'calendar-day-dot';
+                    button.appendChild(dot);
+                }
+            }
+
+            button.addEventListener('click', () => handleCalendarDayClick(dateStr, gamesOnDay.length > 0));
+
+            return button;
+        }
+
+        function handleCalendarDayClick(dateStr, hasGames) {
+            APP_STATE.currentView = 'list';
+            renderCurrentView();
+
+            if (hasGames) {
+                // Find and highlight the first game on this date
+                const gameId = APP_STATE.games.find(g => g.date === dateStr)?.id;
+                if (gameId) {
+                    setTimeout(() => scrollToAndHighlightCard(gameId), 100);
+                }
+            } else {
+                // Create new empty game for this date
+                const newGame = createEmptyGame(dateStr);
+                APP_STATE.games.push(newGame);
+                APP_STATE.games.sort((a, b) => new Date(a.date) - new Date(b.date));
+                saveToStorage();
+                renderCurrentView();
+                setTimeout(() => {
+                    scrollToAndHighlightCard(newGame.id);
+                    expandCard(newGame.id);
+                }, 100);
+            }
+        }
+
+        function updateHeaderTitle() {
+            const year = APP_STATE.currentDate.getFullYear();
+            const month = APP_STATE.currentDate.toLocaleString('zh-CN', { month: 'long' });
+            document.getElementById('headerTitle').textContent = `${year}年${month}`;
+        }
+
+        function changeMonth(delta) {
+            APP_STATE.currentDate = new Date(
+                APP_STATE.currentDate.getFullYear(),
+                APP_STATE.currentDate.getMonth() + delta,
+                1
+            );
+            renderCalendar();
+            updateHeaderTitle();
+        }
+
+        // Card List Rendering
+        function renderCardList() {
+            const cardList = document.getElementById('cardList');
+            const emptyState = document.getElementById('emptyState');
+
+            cardList.innerHTML = '';
+
+            if (APP_STATE.games.length === 0) {
+                emptyState.classList.remove('hidden');
+                return;
+            }
+
+            emptyState.classList.add('hidden');
+            APP_STATE.games.forEach(game => {
+                const card = createGameCard(game);
+                cardList.appendChild(card);
+            });
+        }
+
+        function createGameCard(game) {
+            const card = document.createElement('div');
+            card.className = 'game-card';
+            card.id = `card-${game.id}`;
+            if (APP_STATE.expandedCardId === game.id) {
+                card.classList.add('expanded');
+            }
+
+            const date = new Date(game.date);
+            const month = (date.getMonth() + 1) + '月';
+            const day = date.getDate();
+            const weekday = '周' + WEEKDAYS[date.getDay()];
+
+            card.innerHTML = `
+                <div class="card-header" onclick="toggleCardExpansion('${game.id}')">
+                    <div class="card-date">
+                        <div class="card-date-month">${month}</div>
+                        <div class="card-date-day">${day}</div>
+                        <div class="card-date-weekday">${weekday}</div>
+                    </div>
+                    <div class="card-info">
+                        <div class="card-title">${game.title || '未命名剧本'}</div>
+                        <div class="card-subtitle">
+                            <span>🏠 ${game.venue || '未选择店家'}</span>
+                            <span>🕐 ${game.time || '--:--'}</span>
+                            ${game.role ? `<span>🎭 ${game.role}</span>` : ''}
+                            ${game.depositPaid ? '<span>💰 已付订金</span>' : ''}
+                            ${game.paymentComplete ? '<span>✅ 已付款</span>' : ''}
+                        </div>
+                    </div>
+                    <div class="card-actions">
+                        <button class="favorite-button ${game.favorite ? 'active' : ''}" onclick="event.stopPropagation(); toggleFavorite('${game.id}')">
+                            <span class="material-symbols-outlined ${game.favorite ? 'filled' : ''}">favorite</span>
+                        </button>
+                        <button class="delete-button" onclick="event.stopPropagation(); showDeleteDialog('${game.id}')">
+                            <span class="material-symbols-outlined">delete</span>
+                        </button>
+                    </div>
+                </div>
+                <div class="card-body">
+                    ${createCardForm(game)}
+                </div>
+            `;
+
+            return card;
+        }
+
+        function createCardForm(game) {
+            const isSlotsFull = game.slotsOpen === 0;
+            
+            return `
+                <form class="card-form" onsubmit="event.preventDefault(); saveGame('${game.id}')">
+                    <div class="form-section">
+                        <div class="form-section-title">活动详情</div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label class="form-label">日期</label>
+                                <input type="date" class="form-input" value="${game.date}" onchange="updateGame('${game.id}', 'date', this.value)">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">时间</label>
+                                <input type="time" class="form-input" value="${game.time}" onchange="updateGame('${game.id}', 'time', this.value)">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-section">
+                        <div class="form-section-title">剧本信息</div>
+                        <div class="form-group">
+                            <label class="form-label">店家</label>
+                            <select class="form-select" onchange="updateGame('${game.id}', 'venue', this.value)">
+                                <option value="">选择一个店家</option>
+                                <option value="第二人生" ${game.venue === '第二人生' ? 'selected' : ''}>第二人生</option>
+                                <option value="独白" ${game.venue === '独白' ? 'selected' : ''}>独白</option>
+                                <option value="剧中人" ${game.venue === '剧中人' ? 'selected' : ''}>剧中人</option>
+                                <option value="其他" ${game.venue === '其他' ? 'selected' : ''}>其他</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">剧本名</label>
+                            <input type="text" class="form-input" value="${game.title}" onchange="updateGame('${game.id}', 'title', this.value)" placeholder="请输入剧本名">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">我的角色</label>
+                            <input type="text" class="form-input" value="${game.role}" onchange="updateGame('${game.id}', 'role', this.value)" placeholder="请输入我的角色">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">空缺人数</label>
+                            <input type="number" class="form-input ${isSlotsFull ? 'success' : ''}" min="0" value="${game.slotsOpen}" onchange="updateGame('${game.id}', 'slotsOpen', parseInt(this.value))" placeholder="0">
+                        </div>
+                    </div>
+
+                    <div class="form-section">
+                        <div class="form-section-title">状态</div>
+                        <div class="checkbox-group">
+                            <label class="checkbox-label">订金</label>
+                            <input type="checkbox" class="checkbox-input" ${game.depositPaid ? 'checked' : ''} onchange="updateGame('${game.id}', 'depositPaid', this.checked)">
+                        </div>
+                        <div class="checkbox-group">
+                            <label class="checkbox-label">付款</label>
+                            <input type="checkbox" class="checkbox-input" ${game.paymentComplete ? 'checked' : ''} onchange="updateGame('${game.id}', 'paymentComplete', this.checked)">
+                        </div>
+                    </div>
+
+                    <div class="form-section">
+                        <div class="form-section-title">备注</div>
+                        <textarea class="form-textarea" onchange="updateGame('${game.id}', 'notes', this.value)" placeholder="添加备注...">${game.notes}</textarea>
+                    </div>
+
+                    <div class="form-actions">
+                        <button type="button" class="btn btn-secondary" onclick="collapseCard('${game.id}')">收起</button>
+                        <button type="button" class="btn btn-primary" onclick="collapseCard('${game.id}')">完成</button>
+                    </div>
+                </form>
+            `;
+        }
+
+        // Card Actions
+        function toggleCardExpansion(id) {
+            const card = document.getElementById(`card-${id}`);
+            if (APP_STATE.expandedCardId === id) {
+                card.classList.remove('expanded');
+                APP_STATE.expandedCardId = null;
+            } else {
+                // Collapse other cards
+                document.querySelectorAll('.game-card.expanded').forEach(c => {
+                    c.classList.remove('expanded');
+                });
+                card.classList.add('expanded');
+                APP_STATE.expandedCardId = id;
+            }
+        }
+
+        function expandCard(id) {
+            document.querySelectorAll('.game-card.expanded').forEach(c => {
+                c.classList.remove('expanded');
+            });
+            const card = document.getElementById(`card-${id}`);
+            if (card) {
+                card.classList.add('expanded');
+                APP_STATE.expandedCardId = id;
+            }
+        }
+
+        function collapseCard(id) {
+            const card = document.getElementById(`card-${id}`);
+            if (card) {
+                card.classList.remove('expanded');
+                if (APP_STATE.expandedCardId === id) {
+                    APP_STATE.expandedCardId = null;
+                }
+                // Re-render to update the card header with new data
+                renderCardList();
+            }
+        }
+
+        function scrollToAndHighlightCard(id) {
+            const card = document.getElementById(`card-${id}`);
+            if (card) {
+                card.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                card.classList.add('highlighted');
+                setTimeout(() => {
+                    card.classList.remove('highlighted');
+                }, 2000);
+            }
+        }
+
+        function toggleFavorite(id) {
+            const game = APP_STATE.games.find(g => g.id === id);
+            if (game) {
+                game.favorite = !game.favorite;
+                saveToStorage();
+                renderCardList();
+            }
+        }
+
+        function updateGame(id, field, value) {
+            const game = APP_STATE.games.find(g => g.id === id);
+            if (game) {
+                game[field] = value;
+                saveToStorage();
+                
+                // Re-render if date changed (affects sorting and calendar)
+                if (field === 'date') {
+                    APP_STATE.games.sort((a, b) => new Date(a.date) - new Date(b.date));
+                    renderCardList();
+                    expandCard(id);
+                }
+                
+                // Re-render the specific card if other fields changed
+                if (field === 'slotsOpen' || field === 'venue') {
+                    renderCardList();
+                    expandCard(id);
+                }
+            }
+        }
+
+        // Delete Dialog
+        function showDeleteDialog(id) {
+            APP_STATE.deleteTargetId = id;
+            document.getElementById('deleteDialog').classList.add('active');
+        }
+
+        function closeDeleteDialog() {
+            APP_STATE.deleteTargetId = null;
+            document.getElementById('deleteDialog').classList.remove('active');
+        }
+
+        function confirmDelete() {
+            if (APP_STATE.deleteTargetId) {
+                APP_STATE.games = APP_STATE.games.filter(g => g.id !== APP_STATE.deleteTargetId);
+                saveToStorage();
+                closeDeleteDialog();
+                renderCardList();
+            }
+        }
+
+        // Add New Game
+        function addNewGame() {
+            const today = new Date();
+            const newGame = createEmptyGame(formatDateForStorage(today));
+            APP_STATE.games.push(newGame);
+            APP_STATE.games.sort((a, b) => new Date(a.date) - new Date(b.date));
+            saveToStorage();
+            renderCardList();
+            setTimeout(() => {
+                scrollToAndHighlightCard(newGame.id);
+                expandCard(newGame.id);
+            }, 100);
+        }
+
+        function createEmptyGame(dateStr) {
+            return {
+                id: generateId(),
+                date: dateStr,
+                time: '',
+                venue: '',
+                title: '',
+                role: '',
+                slotsOpen: 0,
+                depositPaid: false,
+                paymentComplete: false,
+                favorite: false,
+                notes: ''
+            };
+        }
+
+        // Utility Functions
+        function generateId() {
+            return Date.now().toString(36) + Math.random().toString(36).substr(2);
+        }
+
+        function formatDateForStorage(date) {
+            const year = date.getFullYear();
+            const month = String(date.getMonth() + 1).padStart(2, '0');
+            const day = String(date.getDate()).padStart(2, '0');
+            return `${year}-${month}-${day}`;
+        }
+
+        function isDateToday(date) {
+            const today = new Date();
+            return date.getDate() === today.getDate() &&
+                   date.getMonth() === today.getMonth() &&
+                   date.getFullYear() === today.getFullYear();
+        }
+
+        // Initialize on load
+        window.addEventListener('DOMContentLoaded', initApp);
+    </script>
+</body>
+</html>
