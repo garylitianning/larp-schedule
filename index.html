@@ -1338,16 +1338,18 @@
                 card.classList.add('expanded');
             }
 
-            const date = new Date(game.date);
-            const month = (date.getMonth() + 1) + '月';
-            const day = date.getDate();
+            // Parse date correctly to avoid timezone issues
+            const [year, month, day] = game.date.split('-').map(Number);
+            const date = new Date(year, month - 1, day);
+            const monthText = month + '月';
+            const dayText = day;
             const weekday = '周' + WEEKDAYS[date.getDay()];
 
             card.innerHTML = `
                 <div class="card-header" onclick="toggleCardExpansion('${game.id}')">
                     <div class="card-date">
-                        <div class="card-date-month">${month}</div>
-                        <div class="card-date-day">${day}</div>
+                        <div class="card-date-month">${monthText}</div>
+                        <div class="card-date-day">${dayText}</div>
                         <div class="card-date-weekday">${weekday}</div>
                     </div>
                     <div class="card-info">
