@@ -1652,36 +1652,12 @@
                 
                 const game = gamesOnDay[0]; // Show first game if multiple
                 
-                // Time
-                if (game.time) {
-                    const timeDiv = document.createElement('div');
-                    timeDiv.className = 'calendar-day-time';
-                    timeDiv.textContent = game.time;
-                    eventContainer.appendChild(timeDiv);
-                }
-                
-                // Title
+                // Title only
                 if (game.title) {
                     const titleDiv = document.createElement('div');
                     titleDiv.className = 'calendar-day-event';
                     titleDiv.textContent = game.title;
                     eventContainer.appendChild(titleDiv);
-                }
-                
-                // Role
-                if (game.role) {
-                    const roleDiv = document.createElement('div');
-                    roleDiv.className = 'calendar-day-role';
-                    roleDiv.textContent = game.role;
-                    eventContainer.appendChild(roleDiv);
-                }
-                
-                // If multiple games, show indicator
-                if (gamesOnDay.length > 1) {
-                    const moreDiv = document.createElement('div');
-                    moreDiv.className = 'calendar-day-more';
-                    moreDiv.textContent = `+${gamesOnDay.length - 1}`;
-                    eventContainer.appendChild(moreDiv);
                 }
                 
                 button.appendChild(eventContainer);
